@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+}
+
+group 'io.easeci'
+version '0.0.1'
+
+sourceCompatibility = '11'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(':domain')
+}
+
+jar {
+    manifest {
+        attributes(
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': "${mainClassName}",
+                'Implements': 'io.easeci.extension.command.Directive',
+                'Entry-Class': 'io.easeci.git.GitPerformer'
+        )
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
